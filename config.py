@@ -161,7 +161,6 @@ ASSET_PARAMS = {
     'FIL/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
     'AR/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
     'ICP/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    # Nuevos listados (valores por defecto)
     'COOKIE/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
     'ALCH/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
     'SWARMS/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
