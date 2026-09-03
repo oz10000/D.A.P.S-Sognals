@@ -1,0 +1,41 @@
+name: Generate Signals
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"          # Cada 5 minutos
+  workflow_dispatch:                # Manual
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Generate signals
+        run: |
+          python -c "
+          from signal_engine import Signal
+          from data_engine import DataEngine
+          from config import SYMBOLS
+          import json
+          
+          de = DataEngine()
+          signals = []
+          for sym in SYMBOLS[:10]:  # Limitar para demo
+              df = de.fetch_ohlcv(sym, limit=200)
+              if df is not None and not df.empty:
+                  s = Signal(sym, df)
+                  signals.append(s.to_dict())
+          
+          with open('signals.json', 'w') as f:
+              json.dump({'signals': signals, 'timestamp': '...'}, f, indent=2)
+          "
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signals
+          path: signals.json
+          retention-days: 1
