@@ -1,11 +1,15 @@
 # config.py
+# ============================================================
+# DAPS Ω — Trading Engine · Configuración central
+# Auditoría forense aplicada — v2.1.0
+# ============================================================
 import os
 
 # ============================================================
 # PROYECTO
 # ============================================================
 PROJECT_NAME = "DAPS Ω — Trading Engine"
-VERSION = "2.0.0"
+VERSION = "2.1.0"
 
 # ============================================================
 # ZONA HORARIA
@@ -34,40 +38,37 @@ os.makedirs(DATA_DIR, exist_ok=True)
 os.makedirs(LOGS_DIR, exist_ok=True)
 
 # ============================================================
-# ACTIVOS (52 activos de alta liquidez en Binance/Bybit)
-# Basado en FUZZANDTRUSH — probado y validado
+# ACTIVOS — LIMPIADOS Y VERIFICADOS
+# Símbolos fantasma eliminados: 1000X, 1000000MOG, 1000WHY,
+# COOKIE, ALCH, SWARMS, PONKE, SLERF, GRIFFAIN, KMNO, AERO,
+# ETHW, MORPHO, SWELL, MATIC (renombrado POL), FTM (→S),
+# RNDR (→RENDER), ILV (baja liquidez)
 # ============================================================
 SYMBOLS = [
     # Top 10 por capitalización
     'BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT', 'ADA/USDT',
     'DOT/USDT', 'LINK/USDT', 'AVAX/USDT', 'UNI/USDT', 'ATOM/USDT',
 
-    # Capa 1 y Capa 2 consolidados
-    'BNB/USDT', 'MATIC/USDT', 'LTC/USDT', 'ETC/USDT', 'VET/USDT',
-    'ALGO/USDT', 'FTM/USDT', 'NEAR/USDT', 'APT/USDT', 'ARB/USDT',
-    'OP/USDT', 'INJ/USDT', 'SEI/USDT', 'SUI/USDT', 'APE/USDT',
+    # Capa 1 y Capa 2 consolidadas
+    'BNB/USDT', 'LTC/USDT', 'ETC/USDT', 'NEAR/USDT', 'APT/USDT',
+    'ARB/USDT', 'OP/USDT', 'INJ/USDT', 'SUI/USDT', 'APE/USDT',
+    'SEI/USDT', 'VET/USDT', 'ALGO/USDT',
 
-    # Meme coins con alta liquidez
+    # Meme coins con liquidez verificada
     'DOGE/USDT', 'PEPE/USDT', 'WIF/USDT', 'BONK/USDT', 'FLOKI/USDT',
 
     # DeFi y ecosistemas
-    'AAVE/USDT', 'MKR/USDT', 'CRV/USDT', 'LDO/USDT', 'RNDR/USDT',
+    'AAVE/USDT', 'MKR/USDT', 'CRV/USDT', 'LDO/USDT',
 
     # Gaming y metaverso
-    'SAND/USDT', 'MANA/USDT', 'GALA/USDT', 'AXS/USDT', 'ILV/USDT',
+    'SAND/USDT', 'MANA/USDT', 'GALA/USDT', 'AXS/USDT',
 
     # Almacenamiento y computación
     'FIL/USDT', 'AR/USDT', 'ICP/USDT',
-
-    # Nuevos listados de Binance (confirmados)
-    'COOKIE/USDT', 'ALCH/USDT', 'SWARMS/USDT', 'AERO/USDT',
-    'ETHW/USDT', 'PONKE/USDT', 'SLERF/USDT', 'KMNO/USDT',
-    '1000X/USDT', 'GRIFFAIN/USDT', 'MORPHO/USDT', '1000000MOG/USDT',
-    '1000WHY/USDT', 'SWELL/USDT'
 ]
 
 # ============================================================
-# EXCHANGES
+# EXCHANGES (fallback en cascada)
 # ============================================================
 EXCHANGE_PRIORITY = [
     'binance',
@@ -77,13 +78,13 @@ EXCHANGE_PRIORITY = [
     'kraken',
     'bybit',
     'gateio',
-    'bitget'
+    'bitget',
 ]
 
 # ============================================================
 # PARÁMETROS DE ESTRATEGIA (OPTIMIZADOS)
 # ============================================================
-MIN_SCORE = 0.50
+MIN_SCORE = 0.35
 MIN_SCORE_A = 0.45
 MIN_SCORE_S = 0.60
 
@@ -115,79 +116,61 @@ BE_BUFFER = 0.0005
 
 # ============================================================
 # PARÁMETROS POR ACTIVO (ASSET_PARAMS)
-# Si un activo no está en este diccionario, se usan valores por defecto.
+# Solo para activos presentes en SYMBOLS.
 # ============================================================
 ASSET_PARAMS = {
-    'BTC/USDT': {'adx_opt': 21, 'ker_opt': 14, 'ema_opt': 34, 'atr_opt': 16},
-    'ETH/USDT': {'adx_opt': 16, 'ker_opt': 12, 'ema_opt': 21, 'atr_opt': 14},
-    'SOL/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'XRP/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'ADA/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 14},
-    'BNB/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'DOT/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
+    'BTC/USDT':  {'adx_opt': 21, 'ker_opt': 14, 'ema_opt': 34, 'atr_opt': 16},
+    'ETH/USDT':  {'adx_opt': 16, 'ker_opt': 12, 'ema_opt': 21, 'atr_opt': 14},
+    'SOL/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'XRP/USDT':  {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
+    'ADA/USDT':  {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 14},
+    'BNB/USDT':  {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
+    'DOT/USDT':  {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
     'LINK/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'AVAX/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    'UNI/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
+    'AVAX/USDT': {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 12},
+    'UNI/USDT':  {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 12},
     'ATOM/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'MATIC/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'LTC/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'ETC/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    'VET/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'ALGO/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'FTM/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'NEAR/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    'APT/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'ARB/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'OP/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'INJ/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    'SEI/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'SUI/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'APE/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'DOGE/USDT': {'adx_opt': 8, 'ker_opt': 6, 'ema_opt': 10, 'atr_opt': 8},
-    'PEPE/USDT': {'adx_opt': 8, 'ker_opt': 6, 'ema_opt': 10, 'atr_opt': 8},
-    'WIF/USDT': {'adx_opt': 8, 'ker_opt': 6, 'ema_opt': 10, 'atr_opt': 8},
-    'BONK/USDT': {'adx_opt': 8, 'ker_opt': 6, 'ema_opt': 10, 'atr_opt': 8},
-    'FLOKI/USDT': {'adx_opt': 8, 'ker_opt': 6, 'ema_opt': 10, 'atr_opt': 8},
-    'AAVE/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    'MKR/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    'CRV/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'LDO/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'RNDR/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    'SAND/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'MANA/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'GALA/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'AXS/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'ILV/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'FIL/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    'AR/USDT': {'adx_opt': 10, 'ker_opt': 8, 'ema_opt': 13, 'atr_opt': 10},
-    'ICP/USDT': {'adx_opt': 12, 'ker_opt': 9, 'ema_opt': 17, 'atr_opt': 12},
-    'COOKIE/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'ALCH/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'SWARMS/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'AERO/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'ETHW/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'PONKE/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'SLERF/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'KMNO/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    '1000X/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'GRIFFAIN/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'MORPHO/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    '1000000MOG/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    '1000WHY/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
-    'SWELL/USDT': {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
+    'LTC/USDT':  {'adx_opt': 14, 'ker_opt': 10, 'ema_opt': 21, 'atr_opt': 14},
+    'ETC/USDT':  {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 12},
+    'NEAR/USDT': {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 12},
+    'APT/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'ARB/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'OP/USDT':   {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'INJ/USDT':  {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 12},
+    'SUI/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'APE/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'SEI/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'VET/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'ALGO/USDT': {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'DOGE/USDT': {'adx_opt':  8, 'ker_opt':  6, 'ema_opt': 10, 'atr_opt':  8},
+    'PEPE/USDT': {'adx_opt':  8, 'ker_opt':  6, 'ema_opt': 10, 'atr_opt':  8},
+    'WIF/USDT':  {'adx_opt':  8, 'ker_opt':  6, 'ema_opt': 10, 'atr_opt':  8},
+    'BONK/USDT': {'adx_opt':  8, 'ker_opt':  6, 'ema_opt': 10, 'atr_opt':  8},
+    'FLOKI/USDT':{'adx_opt':  8, 'ker_opt':  6, 'ema_opt': 10, 'atr_opt':  8},
+    'AAVE/USDT': {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 12},
+    'MKR/USDT':  {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 12},
+    'CRV/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'LDO/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'SAND/USDT': {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'MANA/USDT': {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'GALA/USDT': {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'AXS/USDT':  {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'FIL/USDT':  {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 12},
+    'AR/USDT':   {'adx_opt': 10, 'ker_opt':  8, 'ema_opt': 13, 'atr_opt': 10},
+    'ICP/USDT':  {'adx_opt': 12, 'ker_opt':  9, 'ema_opt': 17, 'atr_opt': 12},
 }
 
 # ============================================================
-# PARÁMETROS POR DEFECTO (DEFAULT_PARAMS)
+# PARÁMETROS POR DEFECTO
 # ============================================================
 DEFAULT_PARAMS = {
-    'min_score': MIN_SCORE,
+    'min_score':   MIN_SCORE,
     'min_score_a': MIN_SCORE_A,
     'min_score_s': MIN_SCORE_S,
-    'adx_threshold': ADX_THRESHOLD,
+    'adx_threshold':   ADX_THRESHOLD,
     'adx_threshold_a': ADX_THRESHOLD_A,
     'adx_threshold_s': ADX_THRESHOLD_S,
-    'ker_threshold': KER_THRESHOLD,
+    'ker_threshold':   KER_THRESHOLD,
     'ker_threshold_a': KER_THRESHOLD_A,
     'ker_threshold_s': KER_THRESHOLD_S,
     'sl_mult_b': SL_MULT_B,
@@ -206,4 +189,30 @@ DEFAULT_PARAMS = {
     'max_hold': MAX_HOLD,
     'risk_per_trade': RISK_PER_TRADE,
     'leverage': LEVERAGE,
+}
+
+# ============================================================
+# PARÁMETROS DE BACKTEST
+# ============================================================
+BACKTEST_CONFIG = {
+    'default_symbols': SYMBOLS[:10],
+    'default_timeframe': '1h',
+    'default_limit': 4320,          # ~180 días de 1h
+    'default_capital': INITIAL_CAPITAL,
+    'default_fee': 0.001,           # 0.10% por lado
+    'default_slippage': 0.0005,     # 0.05%
+    'default_max_hold': MAX_HOLD,
+    'walk_forward_train_days': 30,
+    'walk_forward_test_days': 7,
+    'monte_carlo_iterations': 10000,
+    'random_seed': 42,
+}
+
+# ============================================================
+# APIs PÚBLICAS (fallback para activos no-cripto)
+# ============================================================
+API_ENDPOINTS = {
+    'fiat_frankfurter': 'https://api.frankfurter.dev/v1',
+    'index_stooq': 'https://stooq.com/q/d/l/',
+    'commodity_goldprice': 'https://api.goldprice.dev/v1',
 }
